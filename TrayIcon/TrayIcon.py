@@ -15,7 +15,7 @@ class tray_icon():
         
         self.closing_callback: Callable = closing_callback
         self.menu_callback: Callable = menu_callback # Function that returns title and menu
-        self._icon_thread: threading.Thread = None
+        self._icon_thread: threading.Thread = threading.Thread()
         self._stop_signal: threading.Event = threading.Event()
         self._stop_signal.set()
 
