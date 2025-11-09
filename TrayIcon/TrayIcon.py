@@ -62,5 +62,5 @@ class tray_icon():
     def set_menu_callback(self, menu_callback):
         self.menu_callback = menu_callback
 
-def get_tray_icon(name: str, icon: Image.Image, closing_callback: Callable) -> tray_icon:
+def get_tray_icon(name: str, icon: str, closing_callback: Callable) -> tray_icon:
     return tray_icon(name=name, icon=icon, closing_callback=closing_callback)
