@@ -6,7 +6,7 @@ from typing import Callable
 from PIL import Image
 
 class tray_icon():
-    def __init__(self, name: str, icon: str, closing_callback: Callable):
+    def __init__(self, name: str, icon: str, menu_callback: Callable, closing_callback: Callable):
         self.meta = {
             "name": name, 
             "icon": icon
@@ -14,7 +14,7 @@ class tray_icon():
         
         
         self.closing_callback: Callable = closing_callback
-        self.menu_callback: Callable = None # Function that returns title and menu
+        self.menu_callback: Callable = menu_callback # Function that returns title and menu
         self._icon_thread: threading.Thread = None
         self._stop_signal: threading.Event = threading.Event()
 
@@ -59,8 +59,5 @@ class tray_icon():
     def error_handler(self, error):
         opr.error_pretty(exc=error, name="TrayIcon", message=f"Error in TrayIcon - {error}")
 
-    def set_menu_callback(self, menu_callback):
-        self.menu_callback = menu_callback
-
-def get_tray_icon(name: str, icon: str, closing_callback: Callable) -> tray_icon:
-    return tray_icon(name=name, icon=icon, closing_callback=closing_callback)
+def get_tray_icon(name: str, icon: str, menu_callback: Callable, closing_callback: Callable) -> tray_icon:
+    return tray_icon(name=name, icon=icon, menu_callback=menu_callback, closing_callback=closing_callback)
