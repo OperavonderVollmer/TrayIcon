@@ -6,7 +6,7 @@ from typing import Callable
 from PIL import Image
 
 class tray_icon():
-    def __init__(self, name: str, icon: Image.Image, closing_callback: Callable):
+    def __init__(self, name: str, icon: str, closing_callback: Callable):
         self.meta = {
             "name": name, 
             "icon": icon
@@ -21,7 +21,14 @@ class tray_icon():
     def icon_thread(self) -> None:
 
         title, menu = self.menu_callback()
-        i = pystray.Icon(self.meta["name"], self.meta["icon"], self.meta["name"], menu=menu)
+
+        i = pystray.Icon(
+            name= self.meta["name"], 
+            icon= Image.open(self.meta["icon"]), 
+            title= title or self.meta["name"], 
+            menu= menu)
+        
+
         i.run_detached()
 
         while not self._stop_signal.is_set():
