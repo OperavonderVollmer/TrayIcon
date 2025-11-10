@@ -23,11 +23,18 @@ class tray_icon():
 
         title, menu = self.menu_callback()
 
+        new_menu = pystray.Menu(
+            *menu.items,
+            pystray.MenuItem("Exit", self.closing_callback) 
+        )
+
+
+
         i = pystray.Icon(
             name= self.meta["name"], 
             icon= Image.open(self.meta["icon"]), 
             title= title or self.meta["name"], 
-            menu= menu)
+            menu= new_menu)
         
 
         i.run_detached()
@@ -35,7 +42,11 @@ class tray_icon():
         while not self._stop_signal.is_set():
             try:
                 title, menu = self.menu_callback()
-                i.menu = menu
+                new_menu = pystray.Menu(
+                    *menu.items,
+                    pystray.MenuItem("Exit", self.closing_callback) 
+                )
+                i.menu = new_menu
                 i.title = f"{title}" or f"{self.meta['name']}"
                 time.sleep(1)
             except Exception as e:
@@ -59,6 +70,9 @@ class tray_icon():
 
     def error_handler(self, error):
         opr.error_pretty(exc=error, name="TrayIcon", message=f"Error in TrayIcon - {error}")
+
+
+
 
 def get_tray_icon(name: str, icon: str, menu_callback: Callable, closing_callback: Callable) -> tray_icon:
     return tray_icon(name=name, icon=icon, menu_callback=menu_callback, closing_callback=closing_callback)
