@@ -84,9 +84,9 @@ class tray_icon():
             return
         self._icon_thread = threading.Thread(target=self.icon_thread, daemon=True)
         self._icon_thread.start()
+        self._stop_signal.clear()
         if toast_args:
             opr.send_toast_notification(**toast_args)
-        self._stop_signal.clear()
 
     def stop_icon(self, toast_args: dict | None = None):
         """
@@ -113,13 +113,14 @@ class tray_icon():
             actions : dict | None
                 Dict with actions for toast notification
         """
-        if not self._icon_thread.is_alive() or self._stop_signal.is_set():
+
+        if not self._icon_thread.is_alive() and self._stop_signal.is_set():
             return
         self._stop_signal.set()
         self._icon_thread.join()
+        self.closing_callback()
         if toast_args:
             opr.send_toast_notification(**toast_args)
-        self.closing_callback()
 
     def error_handler(self, error):
         opr.error_pretty(exc=error, name="TrayIcon", message=f"Error in TrayIcon - {error}")
