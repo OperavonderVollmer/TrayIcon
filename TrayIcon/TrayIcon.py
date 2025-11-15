@@ -54,18 +54,71 @@ class tray_icon():
 
         i.stop()
 
-    def start_icon(self):
+    def start_icon(self, toast_args: dict | None = None):
+        """
+        Starts the tray icon
+
+        Parameters
+        ----------
+        toast_args : dict | None
+            Dict with args for toast notification (see below)
+
+        Notes
+        -----
+        Toast args:
+            app_id : str
+                App ID for application
+            title : str
+                Title for toast notification
+            msg : str
+                Message for toast notification
+            icon_path : str
+                Path to icon for toast notification
+            audio_path : str | None
+                Path to audio for toast notification
+            actions : dict | None
+                Dict with actions for toast notification
+        """
+
         if self._icon_thread.is_alive() or not self._stop_signal.is_set():
             return
         self._icon_thread = threading.Thread(target=self.icon_thread, daemon=True)
         self._icon_thread.start()
+        if toast_args:
+            opr.send_toast_notification(**toast_args)
         self._stop_signal.clear()
 
-    def stop_icon(self):
+    def stop_icon(self, toast_args: dict | None = None):
+        """
+        Stops the tray icon
+
+        Parameters
+        ----------
+        toast_args : dict | None
+            Dict with args for toast notification (see below)
+
+        Notes
+        -----
+        Toast args:
+            app_id : str
+                App ID for application
+            title : str
+                Title for toast notification
+            msg : str
+                Message for toast notification
+            icon_path : str
+                Path to icon for toast notification
+            audio_path : str | None
+                Path to audio for toast notification
+            actions : dict | None
+                Dict with actions for toast notification
+        """
         if not self._icon_thread.is_alive() or self._stop_signal.is_set():
             return
         self._stop_signal.set()
         self._icon_thread.join()
+        if toast_args:
+            opr.send_toast_notification(**toast_args)
         self.closing_callback()
 
     def error_handler(self, error):
